@@ -15,7 +15,7 @@ public class WatchListServices {
     List<Movie> movieList=new ArrayList<>();
     List<Director> directorList=new ArrayList<>();
 
-    HashMap<Director,List<Movie>> map=new HashMap<>();
+    HashMap<String,List<String>> map=new HashMap<>();
 
     public void addMovie(Movie movie){
         movieList.add(movie);
@@ -23,13 +23,13 @@ public class WatchListServices {
     public void addDirector(Director director){
         directorList.add(director);
     }
-    public void MovieDirectorPair(Director director,Movie movie){
+    public void MovieDirectorPair(String director,String movie){
         if(map.containsKey(director)){
-            List<Movie> newList=map.get(director);
+            List<String> newList=map.get(director);
             newList.add(movie);
             map.put(director,newList);
         }else{
-            List<Movie> list=new ArrayList<>();
+            List<String> list=new ArrayList<>();
             list.add(movie);
             map.put(director,list);
         }
@@ -37,7 +37,7 @@ public class WatchListServices {
 
     public Movie getMovieByName(String movieName){
         for(Movie temp:movieList){
-            if(temp.equals(movieName)){
+            if(temp.getName().equalsIgnoreCase(movieName)){
                 return temp;
             }
         }
@@ -46,16 +46,16 @@ public class WatchListServices {
 
     public Director getDirectorByName(String directorName){
         for(Director temp:directorList){
-            if(temp.equals(directorName)){
+            if(temp.getName().equalsIgnoreCase(directorName)){
                 return temp;
             }
         }
         return null;
     }
 
-    public List<Movie> getMoviesByDirectorName(String directorName){
-        for(Director temp:map.keySet()){
-            if(temp.getName().equalsIgnoreCase(directorName)){
+    public List<String> getMoviesByDirectorName(String directorName){
+        for(String temp:map.keySet()){
+            if(temp.equalsIgnoreCase(directorName)){
                 return map.get(temp);
             }
         }
@@ -66,17 +66,25 @@ public class WatchListServices {
         return movieList;
     }
     public void deleteDirectorByName(String directorName){
-        Director dirObj=null;
-        List<Movie> movieObj=null;
-        for(Director temp:map.keySet()){
-            if(temp.getName().equalsIgnoreCase(directorName)){
-                directorList.remove(temp);
+        List<String> movieObj=null;
+        for(String temp:map.keySet()){
+            if(temp.equalsIgnoreCase(directorName)){
                 movieObj=map.get(temp);
+                System.out.println("in line 72 "+movieObj);
                 map.remove(temp);
             }
         }
-        for(Movie movie:movieObj){
-            movieList.remove(movie);
+        for(String movie:movieObj){
+            for(Movie movie1 : movieList){
+                if(movie1.getName().equalsIgnoreCase(movie)){
+                    movieList.remove(movie1);
+                }
+            }
+        }
+        for(Director dir :directorList){
+            if(dir.getName().equalsIgnoreCase(directorName)){
+                directorList.remove(dir);
+            }
         }
     }
 
